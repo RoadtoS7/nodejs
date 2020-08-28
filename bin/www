@@ -1,0 +1,100 @@
+#!/usr/bin/env node
+/**
+ * express사용이유 = 통신라이브러리가 잘되어있어서
+ * http 위에 express를 올릴 수 있음
+ * -> Http의 장점, express의 장점을 모두 가져갈 수 있음
+ * http의 장점 = socket을 가져갈 수 있다.
+ */
+
+/**
+ * Module dependencies.
+ */
+var app = require('../app'); // app.js를 가져옴, 여기서 expres 객체가 반환딤
+var debug = require('debug')('nodejs:server'); // debug 객체
+var http = require('http'); // Http 모듈을 다루는 객체
+
+/**
+ * Get port from environment and store in Express.
+ */
+// 아래의 두코드 = 포트번호 설정하는 코드
+//  normalizePort =  포트가 음수인지 아닌지 등등을 검사하는 함수
+// env파일안에 PORT번호가 적혀있으면 가져오고 없으면 3000번을 들고 와라
+var port = normalizePort(process.env.PORT || '3001');
+app.set('port', port); // port 설정
+
+/**
+ * Create HTTP server.
+ */
+// server를 만듬
+// http위에 express를 올리는 방식으로 만들기 때문에 아래에서 createServer의 인자로 express 객체를 넣어
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+// 이 port번호를 리스닝해라
+server.listen(port);
+// server실행중 에러가 나면 onError 콜백이 실행되도록 등록
+server.on('error', onError);
+// server실행이 성공하면 onListeneing 콜백이 실행되도록 등록
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+// 포트가 음수인지 아닌지 등등을 검사하는 함수
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
