@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "npm install && pm2 start ./bin/www --name suhyeon_study",
+    "begin": "pm2 start ./bin/www --name suhyeon_study"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -12,6 +13,7 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
+    "pm2": "^4.4.1",
     "promise": "^8.1.0",
     "promise-mysql": "^4.1.3",
     "pug": "2.0.0-beta11"
